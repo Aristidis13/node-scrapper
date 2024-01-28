@@ -1,5 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 const eventListen = (req: any, res: any) => {
-  console.log(res);
   res.writeHead('Hello world');
   res.end();
 };
