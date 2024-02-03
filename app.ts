@@ -1,12 +1,15 @@
 import express, { Express, NextFunction, Request, Response } from "express";
-import stocksRoutes from "./api/routes/stocks";
+import propertiesRoutes from "./api/routes/properties";
 import loggingMiddleware from "./logger";
 
 const app: Express = express();
 
 app.use(loggingMiddleware);
 
-app.use("/api/stocks", stocksRoutes);
+app.use(
+  /^\/api\/properties\/search(?:\/(data1|data2)\/(.*?))+$/i,
+  propertiesRoutes,
+);
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   Error.prototype.status = 404; //eslint-disable-line
