@@ -126,6 +126,7 @@ module.exports = exports = {
         'no-undef': ERROR,
         'no-undefined': OFF,
         'no-unused-vars': WARN,
+        "@typescript-eslint/no-unused-vars": WARN,
         // Disallow hoisting - let & const don't allow hoisting anyhow
         'no-use-before-define': ERROR,
 
@@ -172,7 +173,6 @@ module.exports = exports = {
         'eol-last': WARN,
         'func-names': WARN,
         'id-length': [WARN, { min: 2, max: 32 }],
-        'linebreak-style': [WARN, 'unix'],
         'lines-around-comment': [WARN, { beforeBlockComment: true }],
         'max-depth': [WARN, 8],
         'max-len': [WARN, 132],
