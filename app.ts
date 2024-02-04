@@ -1,15 +1,13 @@
-import express, { Express, NextFunction, Request, Response } from "express";
-import propertiesRoutes from "./api/routes/properties";
+import express, { NextFunction, Request, Response } from "express";
+import propertiesRoutes from "./api/routes/properties/properties";
 import loggingMiddleware from "./logger";
+import bridge from "http2-express-bridge";
 
-const app: Express = express();
+const app = bridge(express);
 
 app.use(loggingMiddleware);
 
-app.use(
-  /^\/api\/properties\/search(?:\/(data1|data2)\/(.*?))+$/i,
-  propertiesRoutes,
-);
+app.use(/^\/api\/properties\/search+$/i, propertiesRoutes);
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   Error.prototype.status = 404; //eslint-disable-line

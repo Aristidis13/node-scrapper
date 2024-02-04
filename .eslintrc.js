@@ -143,7 +143,7 @@ module.exports = exports = {
         'no-sync': WARN,
 
         // ECMAScript 6 support
-        'arrow-body-style': [ERROR, 'always'],
+        'arrow-body-style': [OFF, 'always'],
         'arrow-parens': [ERROR, 'always'],
         'arrow-spacing': [ERROR, { before: true, after: true }],
         'constructor-super': ERROR,
@@ -174,9 +174,9 @@ module.exports = exports = {
         'func-names': WARN,
         'id-length': [WARN, { min: 2, max: 32 }],
         'lines-around-comment': [WARN, { beforeBlockComment: true }],
-        'max-depth': [WARN, 8],
-        'max-len': [WARN, 132],
-        'max-nested-callbacks': [WARN, 8],
+        'max-depth': [WARN, 5],
+        'max-len': [WARN, 140],
+        'max-nested-callbacks': [WARN, 5],
         'max-params': [WARN, 8],
         'new-cap': WARN,
         'new-parens': WARN,
