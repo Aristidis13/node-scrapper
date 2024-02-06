@@ -1,8 +1,8 @@
 /* eslint-env browser */
 import puppeteer from "puppeteer-extra";
 import StealthPlugin from "puppeteer-extra-plugin-stealth";
-import { siteData } from "./constants";
-import { autoScroll } from "./controllers/common";
+import { siteData } from "../../config/constants";
+import { autoScroll } from "../controllers/common";
 
 puppeteer.use(StealthPlugin()); // eslint-disable-line new-cap
 

@@ -1,6 +1,6 @@
 import express, { NextFunction, Request, Response } from "express";
 import propertiesRoutes from "./api/routes/properties/properties";
-import loggingMiddleware from "./logger";
+import loggingMiddleware from "./api/middleware/logger";
 import bridge from "http2-express-bridge";
 
 const app = bridge(express);
