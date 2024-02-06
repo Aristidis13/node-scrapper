@@ -1,5 +1,5 @@
 import { EvaluateFunc } from "puppeteer";
-import getPropertiesFromXE from "./controllers/xe";
+import getPropertiesFromXE from "../api/controllers/xe";
 
 interface ISiteData {
   title: string;

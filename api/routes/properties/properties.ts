@@ -2,7 +2,7 @@
  * The API that will be exposed to the user
  */
 import express, { Request, Response, NextFunction } from "express";
-import getProperties from "./utils";
+import getProperties from "../../helpers/properties";
 
 /* Turbo Console Log
  * CTRL + ALT + L on variable `x` -> creates console for x
