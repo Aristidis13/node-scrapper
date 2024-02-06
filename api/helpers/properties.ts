@@ -3,13 +3,12 @@ import puppeteer from "puppeteer-extra";
 import StealthPlugin from "puppeteer-extra-plugin-stealth";
 import { siteData } from "../../config/constants";
 import { autoScroll } from "../controllers/common";
+import { ISearchParameters } from "../interfaces-types/properties";
 
 puppeteer.use(StealthPlugin()); // eslint-disable-line new-cap
 
-/**
- * API Route to fetch properties for parameters from UI
- */
-async function getProperties() {
+async function getProperties(searchParams: ISearchParameters) {
+  console.log("Received from UI ", searchParams);
   const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
 
