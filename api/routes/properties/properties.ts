@@ -15,10 +15,8 @@ const router = express.Router(); //eslint-disable-line
 // ---- GET
 router.get("/", async (req: Request, res: Response, next: NextFunction) => {
   // const params = req.params;
-  const propertiesFromXE = await getProperties();
-  res.status(200).json({
-    propertiesFromXE: propertiesFromXE,
-  });
+  const XEData = await getProperties();
+  res.status(200).json(XEData);
 });
 
 export default router;
