@@ -215,7 +215,6 @@ module.exports = exports = {
         "semi": [ERROR, 'always'],
         'sort-vars': OFF,
         'space-before-blocks': [WARN, 'always'],
-        'space-before-function-paren': [WARN, 'never'],
         'keyword-spacing': [2, { before: true, after: true }],
         'space-in-parens': [WARN, 'never'],
         'space-infix-ops': [WARN, { int32Hint: true }],
