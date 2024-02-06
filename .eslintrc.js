@@ -104,7 +104,6 @@ module.exports = exports = {
             },
         ],
         'no-with': WARN,
-        "radix": WARN,
         'vars-on-top': ERROR,
         // Enforces the style of wrapped functions
         'wrap-iife': [ERROR, 'outside'],
@@ -199,19 +198,19 @@ module.exports = exports = {
         'object-curly-spacing': [WARN, 'always'],
         'one-var': OFF,
         'operator-assignment': [WARN, 'never'],
-        'operator-linebreak': [WARN, 'after'],
+        // 'operator-linebreak': [WARN, 'after'],
         'padded-blocks': [WARN, 'never'],
         'quote-props': [WARN, 'consistent-as-needed'],
-        'require-jsdoc': [
-            WARN,
-            {
-                require: {
-                    FunctionDeclaration: true,
-                    MethodDefinition: true,
-                    ClassDeclaration: false,
-                },
-            },
-        ],
+        // 'require-jsdoc': [
+        //     WARN,
+        //     {
+        //         require: {
+        //             FunctionDeclaration: true,
+        //             MethodDefinition: true,
+        //             ClassDeclaration: false,
+        //         },
+        //     },
+        // ],
         'semi-spacing': [WARN, { before: false, after: true }],
         "semi": [ERROR, 'always'],
         'sort-vars': OFF,
