@@ -3,7 +3,7 @@
  * Get the data of the first page of XE
  * @returns {TProperty} : The scraped data
  */
-const getPropertiesFromXE = () => {
+const getDataFromXE = () => {
   // Selectors
   const propertySelector = "div.common-property-ad";
   const imageUrlSelector = `${propertySelector} img`;
@@ -18,7 +18,7 @@ const getPropertiesFromXE = () => {
   const pageNumbersSelector = ".results-pagination > li";
   const initialPageNumber = 0; // Default value
 
-  const propertiesFromXE = Array.from(
+  const properties = Array.from(
     document.querySelectorAll(propertySelector),
   ).map((el) => {
     const imageUrl = el.querySelector(imageUrlSelector)?.src ?? null;
@@ -55,9 +55,9 @@ const getPropertiesFromXE = () => {
   }, initialPageNumber);
 
   return {
-    propertiesFromXE: propertiesFromXE,
+    properties: properties,
     pageNumber: pageNumber,
   };
 };
 
-export default getPropertiesFromXE;
+export default getDataFromXE;
