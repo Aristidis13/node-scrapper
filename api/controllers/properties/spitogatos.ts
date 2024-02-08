@@ -3,7 +3,7 @@
  * Get the data of the first page of XE
  * @returns {TProperty} : The scraped data
  */
-const getDataFromXE = () => {
+const getData = () => {
   // Selectors
   const propertySelector = "div.common-property-ad";
   const imageUrlSelector = `${propertySelector} img`;
@@ -60,4 +60,4 @@ const getDataFromXE = () => {
   };
 };
 
-export default getDataFromXE;
+export default getData;
