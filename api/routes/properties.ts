@@ -1,5 +1,5 @@
 import express, { Request, Response, NextFunction } from "express";
-import getProperties from "../helpers/properties";
+import getProperties from "../controllers/properties";
 import { normalizeParams } from "../controllers/common";
 
 /* Turbo Console Log
@@ -12,7 +12,7 @@ import { normalizeParams } from "../controllers/common";
 const router = express.Router(); //eslint-disable-line
 // ---- GET
 router.get("/", async (req: Request, res: Response, next: NextFunction) => {
-  const params = normalizeParams(req.query); // prettier-ignore
+  const params = normalizeParams(req.query);
 
   const XEData = await getProperties(params);
   res.status(200).json(XEData);

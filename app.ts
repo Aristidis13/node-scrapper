@@ -2,6 +2,7 @@ import express, { NextFunction, Request, Response } from "express";
 import propertiesRoutes from "./api/routes/properties";
 import loggingMiddleware from "./api/middleware/logger";
 import bridge from "http2-express-bridge";
+import { IError } from "./api/interfaces-types/common";
 
 const app = bridge(express);
 
@@ -14,11 +15,6 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   const error = Error("Url doesn't exist");
   next(error);
 });
-
-type IError = {
-  message: string;
-  status: number;
-};
 
 app.use((error: IError, req: Request, res: Response, next: NextFunction) => {
   res.status(error.status ?? 500);
