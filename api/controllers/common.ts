@@ -2,8 +2,7 @@
 import { Page } from "puppeteer";
 import { arrayfy, makeString } from "../helpers/common";
 import { ParsedQs } from "qs";
-import { ItemEnum, TransactionEnum } from "../interfaces-types/common";
-import { ISearchParameters, SquaresUpperLimit, SquaresLowerLimit } from "../interfaces-types/properties"; // prettier-ignore
+import { ISearchParameters, ItemEnum, TransactionEnum } from "../interfaces-types/properties"; // prettier-ignore
 
 /**
  * Normalizes the search parameters to a string or null (if the param doesn't come from UI)
@@ -15,8 +14,6 @@ export const normalizeParams = (params: ParsedQs): ISearchParameters => ({
   item: makeString(params?.itemType) as unknown as ItemEnum,
   lowerprice: makeString(params?.lowerprice),
   higherPrice: makeString(params?.higherPrice),
-  leastSquares: makeString(params?.leastSquares) as SquaresLowerLimit,
-  mostSquares: makeString(params?.mostSquares) as SquaresUpperLimit,
   places: arrayfy(params?.places),
 });
 
