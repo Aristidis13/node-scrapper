@@ -1,6 +1,8 @@
+/**
+ * The API that will be exposed to the user
+ */
 import express, { Request, Response, NextFunction } from "express";
-import getProperties from "../helpers/properties";
-import { normalizeParams } from "../controllers/common";
+import getProperties from "../../helpers/properties";
 
 /* Turbo Console Log
  * CTRL + ALT + L on variable `x` -> creates console for x
@@ -12,9 +14,8 @@ import { normalizeParams } from "../controllers/common";
 const router = express.Router(); //eslint-disable-line
 // ---- GET
 router.get("/", async (req: Request, res: Response, next: NextFunction) => {
-  const params = normalizeParams(req.query); // prettier-ignore
-
-  const XEData = await getProperties(params);
+  // const params = req.params;
+  const XEData = await getProperties();
   res.status(200).json(XEData);
 });
 

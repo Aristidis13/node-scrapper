@@ -1,21 +1,5 @@
 /* eslint-env browser */
 import { Page } from "puppeteer";
-import { arrayfy, makeString } from "../helpers/common";
-import { ParsedQs } from "qs";
-import { ISearchParameters, ItemEnum, TransactionEnum } from "../interfaces-types/properties"; // prettier-ignore
-
-/**
- * Normalizes the search parameters to a string or null (if the param doesn't come from UI)
- * @param {ParsedQs} params : The parameters passed from the GET request of the URL
- * @returns {ISearchParameters} : the parameters with specific types
- */
-export const normalizeParams = (params: ParsedQs): ISearchParameters => ({
-  transaction: makeString(params?.transactionType) as unknown as TransactionEnum, // prettier-ignore
-  item: makeString(params?.itemType) as unknown as ItemEnum,
-  lowerprice: makeString(params?.lowerprice),
-  higherPrice: makeString(params?.higherPrice),
-  places: arrayfy(params?.places),
-});
 
 /**
  * Scrolls to the bottom of the page programmatically
@@ -35,7 +19,7 @@ async function autoScroll(page: Page) {
           clearInterval(timer);
           resolve();
         }
-      }, 100);
+      }, 10);
     });
   });
 }
