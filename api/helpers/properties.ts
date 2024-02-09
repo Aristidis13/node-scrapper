@@ -1,12 +1,31 @@
-import { ISearchParameters } from "../interfaces-types/properties";
+/* eslint-env browser */
+import puppeteer from "puppeteer-extra";
+import StealthPlugin from "puppeteer-extra-plugin-stealth";
 import { siteData } from "../../config/constants";
+import { autoScroll } from "../controllers/common";
+import { ISearchParameters } from "../interfaces-types/properties";
 
-function createUrl(
-  searchParams: ISearchParameters,
-  siteId: string,
-): string | null {
-  const site = siteData.find(({ id }) => id === siteId) ?? null;
-  return site !== null ? `${site.domain}/` : null;
+puppeteer.use(StealthPlugin()); // eslint-disable-line new-cap
+
+async function getProperties(searchParams: ISearchParameters) {
+  console.log("Received from UI ", searchParams);
+  const browser = await puppeteer.launch({ headless: true });
+  const page = await browser.newPage();
+
+  await page.goto(siteData[0].url);
+
+  await page.setViewport({
+    width: 1200,
+    height: 800,
+  });
+
+  await autoScroll(page);
+
+  const results = await page.evaluate(siteData[0].scrape);
+
+  await browser.close();
+
+  return results;
 }
 
-export { createUrl };
+export default getProperties;
