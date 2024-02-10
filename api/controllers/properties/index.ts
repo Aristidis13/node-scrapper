@@ -6,6 +6,8 @@ import { autoScroll } from "../../controllers/common";
 import { IResults, ISearchParameters } from "../../interfaces-types/properties";
 import { makeString } from "../../helpers/common";
 import { createUrl } from "../../helpers/properties";
+import { specifySelectors } from "../../helpers/browser";
+import { getData } from "./xe";
 
 puppeteer.use(StealthPlugin()); // eslint-disable-line new-cap
 
@@ -14,11 +16,14 @@ async function scrape(searchParams: ISearchParameters) {
   const browser = await puppeteer.launch({ headless: true });
 
   for (const site of siteData) {
-    const id = makeString(site.id) ?? JSON.stringify(site);
     const page = await browser.newPage();
-    const apiUrl: string | null = createUrl(searchParams, site.id);
 
-    if (!apiUrl) {
+    const id = makeString(site.id) ?? null;
+    const selectors = specifySelectors(id);
+    const apiUrl: string | null = id ? createUrl(searchParams, id) : null;
+
+    if (!apiUrl || !selectors || !id) {
+      // TODO throw and logError
       continue;
     }
     await page.goto(apiUrl);
@@ -26,7 +31,12 @@ async function scrape(searchParams: ISearchParameters) {
     await page.setViewport({ width: 2400, height: 800 }); // prettier-ignore
 
     await autoScroll(page);
-    results[id] = await page.evaluate(site?.scrape) ?? `Evaluation for ${id} failed.`; // prettier-ignore
+
+    await page.exposeFunction("onEvaluation", getData);
+
+    results[id] =
+      await page.evaluate(getData, selectors) ??
+      `Evaluation for ${id} failed.`; // prettier-ignore
   }
   await browser.close();
 

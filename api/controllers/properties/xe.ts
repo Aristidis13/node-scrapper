@@ -1,49 +1,42 @@
 /* eslint-env browser */
+
+import { ISelectors, IResults } from "../../interfaces-types/properties";
+
+/**
+ * Scrapes and gets the data by specifying two selectors
+ * @param {string} selectorThatFetchestheContainer selector that selects the container
+ * @param {string} selectorsForIndividualDataToGet :selector to target individual content that will extract text from it
+ * @returns {any} the data
+ */
+
 /**
  * Get the data of the first page of XE
- * @returns {TProperty} : The scraped data
+ * @param {string} selectors The selectors for the site we want to scrape
+ * @returns {IResults} : The scraped data
  */
-const getDataFromXE = () => {
-  // Selectors
-  const propertySelector = "div.common-property-ad";
-  const imageUrlSelector = `${propertySelector} img`;
-  const titleSelector = `${propertySelector} .common-property-ad-title`;
-  const priceSelector = `${propertySelector} .common-property-ad-price .property-ad-price`;
-  const pricePerSqmSelector = `${propertySelector} .common-property-ad-price .property-ad-price-per-sqm`;
-  const levelSelector = `${propertySelector} .property-ad-level`;
-  const bedroomsSelector = `${propertySelector} [data-testid=property-ad-bedrooms]`;
-  const bathroomsSelector = `${propertySelector} [data-testid=property-ad-bathrooms]`;
-  const constructionYearSelector = `${propertySelector} [data-testid=property-ad-construction-year]`;
-
-  const pageNumbersSelector = ".results-pagination > li";
+const getData = (selectors: ISelectors): IResults => {
   const initialPageNumber = 0; // Default value
-
+  // TODO Log error if the selector is null
   const properties = Array.from(
-    document.querySelectorAll(propertySelector),
+    document.querySelectorAll(
+      selectors.groupSelectors.selectorForPropertiesContainer,
+    ),
   ).map((el) => {
-    const imageUrl = el.querySelector(imageUrlSelector)?.src ?? null;
-    const title = el.querySelector(titleSelector)?.textContent ?? null;
-    const price = el.querySelector(priceSelector)?.textContent ?? null;
-    const pricePerSqm = el.querySelector(pricePerSqmSelector)?.textContent ?? null; // prettier-ignore
-    const level = el.querySelector(levelSelector)?.textContent ?? null;
-    const bedrooms = el.querySelector(bedroomsSelector)?.textContent ?? null;
-    const bathrooms = el.querySelector(bathroomsSelector)?.textContent ?? null; // prettier-ignore
-    const constructionYear = el.querySelector(constructionYearSelector)?.textContent ?? null; // prettier-ignore
-
-    return {
-      imageUrl: imageUrl,
-      title: title,
-      price: price,
-      pricePerSqm: pricePerSqm,
-      level: level,
-      bedrooms: bedrooms,
-      bathrooms: bathrooms,
-      constructionYear: constructionYear,
-    };
+    return Object.entries(selectors.individualSelectors).reduce(
+      (scrapedPropertyData, currentSelectorData) => {
+        const [propertyIdentifier, selector] = currentSelectorData;
+        const { name, type } = selector;
+        return {
+          ...scrapedPropertyData,
+          [propertyIdentifier]: el.querySelector(name)?.[type] ?? null,
+        };
+      },
+      {},
+    );
   });
 
   const pageNumber = Array.from(
-    document.querySelectorAll(pageNumbersSelector),
+    document.querySelectorAll(selectors.groupSelectors.numOfPagesSelector),
   ).reduce((currentMax: number, currentElement: Element) => {
     const currentElementText =
       currentElement?.textContent ?? initialPageNumber.toString();
@@ -60,4 +53,4 @@ const getDataFromXE = () => {
   };
 };
 
-export default getDataFromXE;
+export { getData, getScrapedData };
