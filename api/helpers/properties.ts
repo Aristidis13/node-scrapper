@@ -3,7 +3,7 @@ import { siteData } from "../../config/constants";
 
 function createUrl(
   searchParams: ISearchParameters,
-  siteId: string,
+  siteId: string | null,
 ): string | null {
   const site = siteData.find(({ id }) => id === siteId) ?? null;
   return site !== null

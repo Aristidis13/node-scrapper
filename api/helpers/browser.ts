@@ -15,30 +15,31 @@ const createSelectorObject = (
  * @returns {Selectors} : The selectors to specify the elements that have data extraction or null if no siteId matches
  */
 const specifySelectors = (siteId: string | null): Selectors => {
-  let selectorForPropertiesContainer = null;
+  let propertiesContainer = null;
   switch (siteId) {
     case "xe":
-      selectorForPropertiesContainer = "div.common-property-ad";
+      propertiesContainer = "div.common-property-ad";
       return {
         groupSelectors: {
-          selectorForPropertiesContainer: selectorForPropertiesContainer,
+          search: {
+            fieldsContainer: "html .property-search-form",
+            // fieldsContainer: ".",
+          },
+          propertiesContainer: propertiesContainer,
           numOfPagesSelector: ".results-pagination > li",
         },
         individualSelectors: {
-          imageUrl: createSelectorObject(
-            `${selectorForPropertiesContainer} img`,
-            "src",
-          ),
-          title: createSelectorObject(`${selectorForPropertiesContainer} .common-property-ad-title`), // prettier-ignore
-          price: createSelectorObject(`${selectorForPropertiesContainer} .common-property-ad-price .property-ad-price`), // prettier-ignore
+          imageUrl: createSelectorObject(`${propertiesContainer} img`, "src"),
+          title: createSelectorObject(`${propertiesContainer} .common-property-ad-title`), // prettier-ignore
+          price: createSelectorObject(`${propertiesContainer} .common-property-ad-price .property-ad-price`), // prettier-ignore
           pricePerSqm: createSelectorObject(
-            `${selectorForPropertiesContainer} .common-property-ad-price .property-ad-price-per-sqm`,
+            `${propertiesContainer} .common-property-ad-price .property-ad-price-per-sqm`,
           ),
-          level: createSelectorObject(`${selectorForPropertiesContainer} .property-ad-level`), // prettier-ignore
-          bedrooms: createSelectorObject(`${selectorForPropertiesContainer} [data-testid=property-ad-bedrooms]`), // prettier-ignore
-          bathrooms: createSelectorObject(`${selectorForPropertiesContainer} [data-testid=property-ad-bathrooms]`), // prettier-ignore
+          level: createSelectorObject(`${propertiesContainer} .property-ad-level`), // prettier-ignore
+          bedrooms: createSelectorObject(`${propertiesContainer} [data-testid=property-ad-bedrooms]`), // prettier-ignore
+          bathrooms: createSelectorObject(`${propertiesContainer} [data-testid=property-ad-bathrooms]`), // prettier-ignore
           constructionYear: createSelectorObject(
-            `${selectorForPropertiesContainer} [data-testid=property-ad-construction-year]`,
+            `${propertiesContainer} [data-testid=property-ad-construction-year]`,
           ),
         },
       };
@@ -47,4 +48,4 @@ const specifySelectors = (siteId: string | null): Selectors => {
   }
 };
 
-export { specifySelectors };
+export { createSelectorObject, specifySelectors };

@@ -1,5 +1,6 @@
 import { ISiteData } from "../api/interfaces-types/properties";
-import getData from "../api/controllers/properties/xe";
+import scrape from "../api/controllers/index";
+import { createSelectorObject } from "../api/helpers/browser";
 
 const siteIds = {
   xe: "xe",
@@ -10,19 +11,32 @@ const siteData: ISiteData[] = [
   {
     id: siteIds.xe,
     title: "Χρυσή Ευκαιρία",
-    domain: "https://www.xe.gr/",
+    domain: "https://www.xe.gr/property/results?",
     propertySelector: ".main-content",
-    scrape: getData,
-    url: "https://www.xe.gr/property/results?transaction_name=buy&item_type=re_residence&geo_place_ids[]=ChIJLe0kpZk1XhMRoIy54iy9AAQ",
+    parametersMap: new Set([
+      "transaction_name",
+      "item_type",
+      "geo_place_ids[]",
+      "minimum_price",
+      "maximum_price",
+      "minimum_bedrooms",
+      "maximum_bedrooms",
+      "minimum_bathrooms",
+      "maximum_bathrooms",
+    ]),
+    searchForm: [
+      // createSelectorObject(, "value"),
+      { name: "", type: "" },
+      { name: "", type: "" },
+    ],
   },
-  {
-    id: siteIds.spitogatos,
-    title: "Spitogatos",
-    propertySelector: "",
-    domain: "https://www.spitogatos.gr/",
-    scrape: getData,
-    url: "https://www.spitogatos.gr/pwliseis-katoikies/patra/timi_apo-20000/timi_eos-50000/emvado_apo-20",
-  },
+  // {
+  //   id: siteIds.spitogatos,
+  //   title: "Spitogatos",
+  //   propertySelector: ".search-results__wrap-left",
+  //   domain: "https://www.spitogatos.gr/",
+  //   parametersMap: {},
+  // },
 ];
 
 export { siteIds, siteData };

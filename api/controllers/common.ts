@@ -2,23 +2,22 @@
 import { Page } from "puppeteer";
 import { arrayfy, makeString } from "../helpers/common";
 import { ParsedQs } from "qs";
-import { ItemEnum, TransactionEnum } from "../interfaces-types/common";
-import { ISearchParameters, SquaresUpperLimit, SquaresLowerLimit } from "../interfaces-types/properties"; // prettier-ignore
+import { ISearchParameters } from "../interfaces-types/properties"; // prettier-ignore
 
 /**
  * Normalizes the search parameters to a string or null (if the param doesn't come from UI)
  * @param {ParsedQs} params : The parameters passed from the GET request of the URL
  * @returns {ISearchParameters} : the parameters with specific types
  */
-export const normalizeParams = (params: ParsedQs): ISearchParameters => ({
-  transaction: makeString(params?.transactionType) as unknown as TransactionEnum, // prettier-ignore
-  item: makeString(params?.itemType) as unknown as ItemEnum,
-  lowerprice: makeString(params?.lowerprice),
-  higherPrice: makeString(params?.higherPrice),
-  leastSquares: makeString(params?.leastSquares) as SquaresLowerLimit,
-  mostSquares: makeString(params?.mostSquares) as SquaresUpperLimit,
-  places: arrayfy(params?.places),
-});
+export const normalizeParams = (params: ParsedQs): ISearchParameters => {
+  return Object.entries(params).reduce(
+    (data, parameter) => ({
+      ...data,
+      parameter: arrayfy(parameter) ?? makeString(parameter),
+    }),
+    {},
+  );
+};
 
 /**
  * Scrolls to the bottom of the page programmatically

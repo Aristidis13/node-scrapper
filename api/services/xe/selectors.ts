@@ -1,0 +1,3 @@
+const xeSearchSelectors = {};
+
+export { xeSearchSelectors };
