@@ -1,5 +1,5 @@
 import express, { Request, Response, NextFunction } from "express";
-import getProperties from "../controllers/properties";
+import getProperties from "../controllers";
 import { normalizeParams } from "../controllers/common";
 
 /* Turbo Console Log

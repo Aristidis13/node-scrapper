@@ -4,26 +4,29 @@ import { EvaluateFunc } from "puppeteer";
 type NumberAsString = string;
 type ArrayAsString = string; // An array that is string
 type EvaluationFunction = EvaluateFunc<[]>;
-type SquaresUpperLimit = string | null;
-type SquaresLowerLimit = string | null;
+type MaxSquares = string | null;
+type MinSquares = string | null;
 type EmptyObject = object;
 
 interface ISearchParameters {
-  lowerprice: NumberAsString | null;
-  higherPrice: NumberAsString | null;
-  transaction: TransactionEnum | null;
-  leastSquares: SquaresLowerLimit;
-  mostSquares: SquaresUpperLimit;
-  item: ItemEnum | null;
-  places: string[] | null;
+  [key: string]: string | null | TransactionEnum | ItemEnum | string[];
 }
-interface ISiteData {
-  id: string;
-  title: string;
-  domain: string;
-  propertySelector: string;
-  scrape: Function;
-  url: string;
+
+/**
+ * Parameters that are received from UI and will be mapped to individual Urls
+ */
+interface IUIParameters {
+  transactionName?: TransactionEnum;
+  places?: string[];
+  minPrice: string;
+  maxPrice: string;
+  minSquares?: MinSquares;
+  maxSquares?: MaxSquares;
+  minBedrooms?: string;
+  maxBedrooms?: string;
+  minBathrooms?: string;
+  maxBathrooms?: string;
+  item?: ItemEnum;
 }
 
 interface SelectorData {
@@ -31,11 +34,23 @@ interface SelectorData {
   type: string;
 }
 
+interface ISiteData {
+  id: string;
+  title: string;
+  domain: string;
+  propertySelector: string;
+  parametersMap: Set; // IUIParameters;
+  searchForm: SelectorData[];
+}
+
 interface ISelectors {
   // Selectors that target specific elements that have specific functions - used with querySelector
   groupSelectors: {
-    selectorForPropertiesContainer: string; // The selector to select the container of the properties
+    propertiesContainer: string; // The selector to select the container of the properties
     numOfPagesSelector: string; // The number of pages
+    search: {
+      fieldsContainer: string;
+    };
   };
   // Selectors that used with querySelectorAll
   individualSelectors: {
@@ -57,6 +72,7 @@ interface IResults {
 type Selectors = ISelectors | null;
 
 export {
+  IUIParameters,
   SelectorData,
   ISelectors,
   Selectors,
@@ -64,6 +80,6 @@ export {
   NumberAsString,
   ISiteData,
   IResults,
-  SquaresLowerLimit,
-  SquaresUpperLimit,
+  MinSquares,
+  MaxSquares,
 };
