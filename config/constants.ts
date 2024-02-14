@@ -1,6 +1,4 @@
 import { ISiteData } from "../api/interfaces-types/properties";
-import scrape from "../api/controllers/index";
-import { createSelectorObject } from "../api/helpers/browser";
 
 const siteIds = {
   xe: "xe",
@@ -11,7 +9,7 @@ const siteData: ISiteData[] = [
   {
     id: siteIds.xe,
     title: "Χρυσή Ευκαιρία",
-    domain: "https://www.xe.gr/property/results?",
+    domain: "https://www.xe.gr/",
     propertySelector: ".main-content",
     parametersMap: new Set([
       "transaction_name",
@@ -30,13 +28,6 @@ const siteData: ISiteData[] = [
       { name: "", type: "" },
     ],
   },
-  // {
-  //   id: siteIds.spitogatos,
-  //   title: "Spitogatos",
-  //   propertySelector: ".search-results__wrap-left",
-  //   domain: "https://www.spitogatos.gr/",
-  //   parametersMap: {},
-  // },
 ];
 
 export { siteIds, siteData };
