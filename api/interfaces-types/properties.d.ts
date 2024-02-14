@@ -1,4 +1,3 @@
-import { TransactionEnum, ItemEnum } from "./common";
 import { EvaluateFunc } from "puppeteer";
 
 type NumberAsString = string;
@@ -7,16 +6,27 @@ type EvaluationFunction = EvaluateFunc<[]>;
 type MaxSquares = string | null;
 type MinSquares = string | null;
 type EmptyObject = object;
+type Transaction = "buy" | "rent" | null;
+type Property = "appartment" | "house" | "land" | null;
 
 interface ISearchParameters {
-  [key: string]: string | null | TransactionEnum | ItemEnum | string[];
+  transaction: Transaction;
+  propertyType: Property;
+  [key: string]: string | null | string[];
+}
+
+interface IXEAutoCompletePlaceSuggestion {
+  main_text: string;
+  secondary_text: string;
+  place_id: string;
+  name: string;
 }
 
 /**
  * Parameters that are received from UI and will be mapped to individual Urls
  */
 interface IUIParameters {
-  transactionName?: TransactionEnum;
+  transactionName?: Transaction;
   places?: string[];
   minPrice: string;
   maxPrice: string;
@@ -26,7 +36,7 @@ interface IUIParameters {
   maxBedrooms?: string;
   minBathrooms?: string;
   maxBathrooms?: string;
-  item?: ItemEnum;
+  item?: Property;
 }
 
 interface SelectorData {
@@ -48,11 +58,8 @@ interface ISelectors {
   groupSelectors: {
     propertiesContainer: string; // The selector to select the container of the properties
     numOfPagesSelector: string; // The number of pages
-    search: {
-      fieldsContainer: string;
-    };
   };
-  // Selectors that used with querySelectorAll
+  // Selectors that are used with querySelector to scrape specific field info
   individualSelectors: {
     imageUrl: SelectorData;
     title: SelectorData;
@@ -73,6 +80,7 @@ type Selectors = ISelectors | null;
 
 export {
   IUIParameters,
+  IXEAutoCompletePlaceSuggestion,
   SelectorData,
   ISelectors,
   Selectors,

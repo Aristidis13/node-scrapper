@@ -5,7 +5,6 @@ import {
   IResults,
   ISearchParameters,
 } from "../interfaces-types/properties";
-// import xeSearch from "./xe/search";
 
 /**
  * Get the data of the first page of XE
@@ -49,21 +48,33 @@ const getData = (selectors: ISelectors): IResults => {
   };
 };
 
-async function submitSearch(
+async function setBrowserFields(
   searchParams: ISearchParameters,
-  selectors: ISelectors,
+  page: Page,
+  geoIds: string[],
   siteId: string,
 ) {
-  const { fieldsContainer } = selectors.groupSelectors.search;
+  let selector = null;
   if (siteId === "xe") {
-    return Array.from(document.querySelectorAll(fieldsContainer)).map((el) => {
-      // const { } = ;
-      // console.log(el.querySelector("[name][value]")?.textContent);
-      return el.querySelector("[name][value]")?.textContent;
-    });
+    selector = await page.evaluate((searchParameters) => {
+      const searchParentSelector = "body form.property-search-form";
+      let transaction = document
+        .querySelector(`${searchParentSelector}>.property-transaction>input`)
+        ?.getAttribute("value"); // prettier-ignore
+      let propertyTypeValue = document
+        .querySelector(`${searchParentSelector}>.property-type>input`)
+        ?.getAttribute("value"); // prettier-ignore
+      transaction = searchParameters?.transaction ?? "buy";
+      propertyTypeValue = searchParameters?.propertyType ?? "re_residence";
 
-    return fieldsContainer;
+      return {
+        propertyType: propertyTypeValue, // ready to accept dynamic data
+        transaction: transaction, // ready to accept dynamic data
+      };
+    }, searchParams);
   }
+
+  return { ...selector, geoIds: geoIds };
 }
 
-export { getData, submitSearch };
+export { getData, setBrowserFields };

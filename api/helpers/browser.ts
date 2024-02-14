@@ -16,17 +16,22 @@ const createSelectorObject = (
  */
 const specifySelectors = (siteId: string | null): Selectors => {
   let propertiesContainer = null;
+  let searchFieldsContainer = null;
   switch (siteId) {
     case "xe":
       propertiesContainer = "div.common-property-ad";
+      searchFieldsContainer = "body form.property-search-form";
       return {
         groupSelectors: {
-          search: {
-            fieldsContainer: "html .property-search-form",
-            // fieldsContainer: ".",
-          },
           propertiesContainer: propertiesContainer,
           numOfPagesSelector: ".results-pagination > li",
+        },
+        searchFields: {
+          transactionName: `${searchFieldsContainer}>.property-transaction>input`,
+          placesInput: `.geo-area-content > input[name=geo_place_id]`,
+          placesDropdown:
+            ".dropdown-container>[data-testid=geo_place_id_dropdown_panel]>.dropdown-panel-option",
+          propertyType: `${searchFieldsContainer}>.property-type>input`,
         },
         individualSelectors: {
           imageUrl: createSelectorObject(`${propertiesContainer} img`, "src"),
