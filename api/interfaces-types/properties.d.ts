@@ -9,17 +9,16 @@ type EmptyObject = object;
 type Transaction = "buy" | "rent" | null;
 type Property = "appartment" | "house" | "land" | null;
 
-interface ISearchParameters {
-  transaction: Transaction;
-  propertyType: Property;
-  [key: string]: string | null | string[];
-}
-
 interface IXEAutoCompletePlaceSuggestion {
   main_text: string;
   secondary_text: string;
   place_id: string;
   name: string;
+}
+interface ISearchParameters {
+  transaction: Transaction;
+  propertyType: Property;
+  placesSuggestionsToSearch: string[];
 }
 
 /**
@@ -50,7 +49,6 @@ interface ISiteData {
   domain: string;
   propertySelector: string;
   parametersMap: Set; // IUIParameters;
-  searchForm: SelectorData[];
 }
 
 interface ISelectors {
