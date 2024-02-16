@@ -5,10 +5,9 @@ import { siteData } from "../../config/constants";
 import { autoScroll } from "./common";
 import { IResults, ISearchParameters } from "../interfaces-types/properties";
 import { makeString } from "../helpers/common";
-import { createUrl } from "../helpers/properties";
 import { specifySelectors } from "../helpers/browser";
 import { getData, setBrowserFields } from "../services/index";
-import { setGeoIdsOfPlaces } from "../services/xe/search";
+import { getMaxNumOfPages } from "../services/xe/search";
 
 puppeteer.use(StealthPlugin()); // eslint-disable-line new-cap
 
@@ -17,59 +16,44 @@ async function scrape(searchParams: ISearchParameters) {
   const browser = await puppeteer.launch({ headless: true });
 
   for (const site of siteData) {
-    const {
-      id: siteId,
-      title,
-      domain,
-      propertySelector,
-      parametersMap,
-      searchForm,
-    } = site;
+    const siteId = makeString(site.id);
     const page = await browser.newPage();
+    const selectors = specifySelectors(siteId);
 
-    const id = makeString(siteId) ?? null;
-    const selectors = specifySelectors(id);
-    const apiUrl: string | null = createUrl(searchParams, id);
-
-    if (!apiUrl || !selectors || !id) {
+    if (!selectors || !siteId) {
       // TODO throw and logError
+      console.error("Selectors or siteId is null");
       continue;
     }
 
-    // page.on("response", async (response) => {
-    //   const url = response.url();
-    //   if (url.startsWith("https://www.xe.gr/")) {
-    //     console.log(`Response url: ${url}`);
-    //     console.log(`Response url:`, JSON.stringify(response));
-    //   }
-    // });
-
-    await page.goto(apiUrl, { waitUntil: "load" });
-
-    await page.exposeFunction("searchPlaces", setGeoIdsOfPlaces);
-    const placesToSearch = ["Πάτρα", "Αθήνα"];
-    const geoPlaceIds = [];
-    for (const place of placesToSearch) {
-      geoPlaceIds.push(await page.evaluate(setGeoIdsOfPlaces, place));
-    }
-    const geoIds = geoPlaceIds.flat(2);
+    await page.goto(site.domain, { waitUntil: "load" });
 
     await page.exposeFunction("onSubmitSearch", setBrowserFields);
+    await page.exposeFunction("findNumOfPages", getMaxNumOfPages);
+
+    const placesToSearch = ["Πάτρα"];
+
     const searchData = await setBrowserFields(
       searchParams,
       page,
-      geoIds as string[],
-      id,
+      placesToSearch,
+      siteId,
     );
-    console.log("searchdata ", searchData);
 
-    await page.setViewport({ width: 2400, height: 800 }); // prettier-ignore
-
+    await page.setViewport({ width: 2400, height: 800 });
     await autoScroll(page);
+
+    const numOfPages = await page.evaluate(getMaxNumOfPages, selectors);
+    console.log("🚀 ~ scrape ~ numOfPages:", numOfPages);
 
     await page.exposeFunction("onEvaluation", getData);
 
-    results[id] = await page.evaluate(getData, selectors) ?? `Evaluation for ${id} failed.`; // prettier-ignore
+    results[siteId] =
+      await page.evaluate(
+        getData,
+        selectors,
+        searchData,
+      ) ?? `Evaluation for ${siteId} failed.`; // prettier-ignore
   }
   await browser.close();
 

@@ -1,32 +1,24 @@
 /* eslint-env browser */
-import { EvaluateFunc, Page } from "puppeteer";
-import {
-  ISearchParameters,
-  IXEAutoCompletePlaceSuggestion,
-} from "../../interfaces-types/properties";
+import { ISelectors } from "../../interfaces-types/properties";
 
-export const setGeoIdsOfPlaces: EvaluateFunc<any> = async (place: string) => {
-  const geoIds: string[] = [];
+const getMaxNumOfPages = (selectorsContainer: ISelectors) => {
+  const initialPageNumber = 0; // Default value
 
-  const response = await fetch(
-    `https://www.xe.gr/services/places/autocomplete?query=${place}&user_action=insertText&resolution=558x684`,
-    {
-      headers: {
-        "content-type": "application/json; charset=utf-8",
-      },
-      method: "GET",
-    },
-  );
-  const recommendedPlaces = await response.json();
-  const placeIdsThatMatch = (recommendedPlaces ?? []).reduce(
-    (placeIds: string[], somePlace: IXEAutoCompletePlaceSuggestion) => {
-      if (somePlace?.main_text.includes(place) && somePlace?.place_id) {
-        placeIds.push(somePlace?.place_id);
-      }
-      return placeIds;
-    },
-    [],
-  );
-  geoIds.push(placeIdsThatMatch);
-  return geoIds.flat(2);
+  const maxPageNumber = Array.from(
+    document.querySelectorAll(
+      selectorsContainer.groupSelectors.numOfPagesSelector,
+    ),
+  ).reduce((currentMax: number, currentElement: Element) => {
+    const currentElementText =
+      currentElement?.textContent ?? initialPageNumber.toString();
+    const currentElementNumber: number = parseInt(currentElementText);
+    return typeof currentElementNumber === "number" &&
+      currentMax < currentElementNumber
+      ? currentElementNumber
+      : currentMax;
+  }, initialPageNumber);
+
+  return maxPageNumber;
 };
+
+export { getMaxNumOfPages };
