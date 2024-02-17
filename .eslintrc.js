@@ -171,7 +171,7 @@ module.exports = exports = {
         'consistent-this': [WARN, 'self'],
         'eol-last': WARN,
         'func-names': WARN,
-        'id-length': [WARN, { min: 2, max: 32 }],
+        'id-length': [WARN, { min: 0, max: 32 }],
         'lines-around-comment': [WARN, { beforeBlockComment: true }],
         'max-depth': [WARN, 5],
         'max-len': [WARN, 140],
