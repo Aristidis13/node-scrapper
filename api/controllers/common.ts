@@ -10,6 +10,8 @@ import { ISearchParameters } from "../interfaces-types/properties"; // prettier-
  * @returns {ISearchParameters} : the parameters with specific types
  */
 export const normalizeParams = (params: ParsedQs): ISearchParameters => {
+  console.log("🚀 ~ normalizeParams ~ params:", params);
+
   return Object.entries(params).reduce(
     (data, parameter) => ({
       ...data,

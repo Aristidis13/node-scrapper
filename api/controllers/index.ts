@@ -13,7 +13,7 @@ puppeteer.use(StealthPlugin()); // eslint-disable-line new-cap
 
 async function scrape(searchParams: ISearchParameters) {
   const results: IResults = {};
-  const browser = await puppeteer.launch({ headless: true });
+  const browser = await puppeteer.launch({ headless: "new" });
 
   for (const site of siteData) {
     const siteId = makeString(site.id);
@@ -31,20 +31,11 @@ async function scrape(searchParams: ISearchParameters) {
     await page.exposeFunction("onSubmitSearch", setBrowserFields);
     await page.exposeFunction("findNumOfPages", getMaxNumOfPages);
 
-    const placesToSearch = ["Πάτρα"];
-
-    const searchData = await setBrowserFields(
-      searchParams,
-      page,
-      placesToSearch,
-      siteId,
-    );
+    const searchData = await setBrowserFields(searchParams, page, siteId);
+    // console.log("🚀 ~ searchData:", searchData);
 
     await page.setViewport({ width: 2400, height: 800 });
     await autoScroll(page);
-
-    const numOfPages = await page.evaluate(getMaxNumOfPages, selectors);
-    console.log("🚀 ~ scrape ~ numOfPages:", numOfPages);
 
     await page.exposeFunction("onEvaluation", getData);
 
@@ -54,6 +45,9 @@ async function scrape(searchParams: ISearchParameters) {
         selectors,
         searchData,
       ) ?? `Evaluation for ${siteId} failed.`; // prettier-ignore
+
+    const numOfPages = await page.evaluate(getMaxNumOfPages, selectors);
+    console.log("🚀 ~ scrape ~ numOfPages:", numOfPages);
   }
   await browser.close();
 

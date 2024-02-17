@@ -16,8 +16,8 @@ interface IXEAutoCompletePlaceSuggestion {
   name: string;
 }
 interface ISearchParameters {
-  transaction: Transaction;
-  propertyType: Property;
+  transaction: string; // Transaction type;
+  propertyType: string; // Property;
   placesSuggestionsToSearch: string[];
 }
 
@@ -82,10 +82,12 @@ export {
   SelectorData,
   ISelectors,
   Selectors,
+  Transaction,
   ISearchParameters,
   NumberAsString,
   ISiteData,
   IResults,
   MinSquares,
   MaxSquares,
+  Property,
 };

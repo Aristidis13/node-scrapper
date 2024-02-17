@@ -5,11 +5,6 @@ type IError = {
   status: number;
 };
 
-enum TransactionEnum {
-  buy,
-  rent,
-}
-
 enum ItemEnum {
   appartment,
   house,
@@ -18,4 +13,4 @@ enum ItemEnum {
   shop,
 }
 
-export { IError, TransactionEnum, ItemEnum };
+export { IError, ItemEnum };
