@@ -5,6 +5,7 @@ import {
   IResults,
   ISearchParameters,
 } from "../interfaces-types/properties";
+import { delay } from "../helpers/browser";
 
 const getData = (selectors: ISelectors): IResults => {
   // TODO Log error if the selector is null
@@ -34,8 +35,8 @@ async function setBrowserFields(
   page: Page,
   siteId: string | null,
 ) {
-  let selector = null;
   if (siteId === "xe") {
+    await delay(4);
     // Click accept if button exists
     await page.evaluate(() => {
       (
@@ -45,6 +46,8 @@ async function setBrowserFields(
       )?.click();
     });
 
+    await delay(3);
+
     // Set transaction
     const propertyTransactionSelector = "body .header-dropdowns-container>.property-transaction"; // prettier-ignore
     const propertyTransactionInputEl = await page.$(propertyTransactionSelector); // prettier-ignore
@@ -52,61 +55,51 @@ async function setBrowserFields(
     const listOptionEl = await page.$(`${propertyTransactionSelector}>ul>li>[data-id=${searchParams.transaction}]`); // prettier-ignore
     await listOptionEl?.evaluate((b) => (b as unknown as HTMLElement).click()); // prettier-ignore
 
+    await delay(4);
+
     // Set PropertyType
     const propertyTypeSelector = "body .header-dropdowns-container>.property-type"; // prettier-ignore
     const propertyTypeInputEl = await page.$(propertyTypeSelector);
     await propertyTypeInputEl?.evaluate((b) => (b as unknown as HTMLElement).click()); // prettier-ignore
     const optionEl = await page.$(`${propertyTypeSelector}>ul>li>[data-id=${searchParams.propertyType}]`); // prettier-ignore
     await optionEl?.evaluate((b) => (b as unknown as HTMLElement).click()); // prettier-ignore
+    await delay(4);
 
-    await page.screenshot({
-      path: "./public/screenAfterPropertyClicks.png",
-    });
+    // Start adding places and retrieve every place from options
+    const optionsSelector = `.geo-area-autocomplete-container>.dropdown-container`;
+    const specifyOptionSelector = (position: number) =>
+      `${optionsSelector} .dropdown-panel-option:nth-child(${position})`;
+    for (const place of searchParams.placesSuggestionsToSearch) {
+      await page.type("#areaInput", place);
+      await delay(4);
+      await page.waitForSelector(optionsSelector);
 
-    selector = await page.evaluate(
-      async (searchParameters: ISearchParameters) => {
-        const error = {};
+      // Get all the options that include the `place`value in their description
+      const allOptions = await page.$$eval(
+        `${optionsSelector} .dropdown-panel-option`,
+        (options) =>
+          options.map((option, index) => ({
+            text: option.textContent || "",
+            positionInList: index,
+          })),
+      );
 
-        let placeValue = document.getElementById(`#areaInput`)?.getAttribute("value"); // prettier-ignore
-        const optionsContainer = document.querySelectorAll(
-          `body .geo-area-autocomplete-container>.dropdown-container>button`,
-        );
+      const options = allOptions.filter((option) => option.text.includes(place)); // prettier-ignore
+      const input = await page.$("#areaInput");
 
-        const placesToSearch = searchParameters.placesSuggestionsToSearch;
+      for await (const option of options) {
+        const optionSelector = specifyOptionSelector(option.positionInList + 1);
+        await page.waitForSelector(optionSelector);
+        await delay(2);
 
-        for (let i = 0; i < placesToSearch.length; i++) {
-          placeValue = placesToSearch[i]; // set a value to trigger a response of suggestions
-
-          //   Array.from(optionsContainer).map(async (option) => {
-          //     const optionText = option.querySelector("button")?.textContent;
-          //     if (
-          //       typeof optionText === "string" &&
-          //       placesToSearch[i] /* .main_text*/
-          //         .includes(optionText)
-          //     ) {
-          //       await page.click(
-          //         `body .geo-area-autocomplete-container>.dropdown-container>button::nth-child(${i})`,
-          //       );
-          //     } else {
-          //       throw new Error(
-          //         `Unknown Error on setBrowserFields Function for optionText ${optionText}`,
-          //       );
-          //     }
-          //   });
-        }
-
-        return {
-          error: error,
-          // transaction: transaction, // ready to accept dynamic data
-        };
-      },
-      searchParams,
-    );
+        await page.$eval(optionSelector, (el) => (el as unknown as HTMLButtonElement)?.click()); // prettier-ignore
+        // eslint-disable-next-line no-return-assign
+        await input?.evaluate((el) => (el as unknown as HTMLInputElement).value = "",); // prettier-ignore
+        await page.type("#areaInput", place);
+        await delay(2);
+      }
+    }
   }
-
-  return {
-    ...selector,
-  };
 }
 
 export { getData, setBrowserFields };
