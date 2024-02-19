@@ -1,5 +1,5 @@
 import express, { NextFunction, Request, Response } from "express";
-import propertiesRoutes from "./api/routes/properties";
+import propertiesRoutes from "./api/routes";
 import loggingMiddleware from "./api/middleware/logger";
 import bridge from "http2-express-bridge";
 import { IError } from "./api/interfaces-types/common";
