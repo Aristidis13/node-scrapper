@@ -4,8 +4,7 @@ import StealthPlugin from "puppeteer-extra-plugin-stealth";
 import { siteData } from "../../config/constants";
 import { IResults, ISearchParameters } from "../interfaces-types/properties";
 import { makeString } from "../helpers/common";
-import { getDataForPage, setBrowserFields } from "../services/index";
-import { getMaxNumOfPages } from "../services/xe/search";
+import { getDataForPage, handleSearch } from "../services/index";
 
 puppeteer.use(StealthPlugin()); // eslint-disable-line new-cap
 
@@ -29,14 +28,9 @@ async function scrape(searchParams: ISearchParameters) {
 
     await page.goto(site.domain, { waitUntil: "load" });
 
-    await setBrowserFields(searchParams, page, siteId);
+    await handleSearch(searchParams, page, siteId);
 
     results[siteId] = await getDataForPage(page);
-
-    // results[siteId] = await page.evaluate(getData, selectors, page) ?? `Evaluation for ${siteId} failed.`; // prettier-ignore
-
-    const numOfPages = await getMaxNumOfPages(page);
-    console.log(numOfPages);
   }
   await browser.close();
 

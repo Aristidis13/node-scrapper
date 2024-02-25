@@ -10,7 +10,6 @@ const siteData: ISiteData[] = [
     id: siteIds.xe,
     title: "Χρυσή Ευκαιρία",
     domain: "https://www.xe.gr/property/results",
-    propertySelector: ".main-content",
     parametersMap: {
       // UIParameterName : XEURLParameterName
       transaction: "transaction_name",

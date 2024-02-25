@@ -1,7 +1,11 @@
 /* eslint-env browser */
 import { Page } from "puppeteer";
 import { delay } from "../../helpers/browser";
-import { ISearchParameters } from "../../interfaces-types/properties";
+import {
+  IPlacesOptions,
+  ISearchParameters,
+} from "../../interfaces-types/properties";
+import { getOptionsForPlace } from "./search";
 
 /**
  * Closes banner that asks you to accept / decline cookies gathering for XE.
@@ -46,43 +50,29 @@ const setTransaction = async (page: Page, searchParams: ISearchParameters) => {
  * 1) Add the place to search in the search input,
  * 2) wait for the options dropdown to appear,
  * 3) select one you haven't selected
- * 4) repeat until all options for the place have been selected
+ * 4) repeat until all options for each place have been selected
+ * 5) repeat for every place
  * @param {Page} page The XE page
- * @param {string} place The place to Search
+ * @param {string} places The place to Search
  */
-const setOptionsForPlace = async (page: Page, place: string) => {
+const setOptionsForPlace = async (page: Page, places: IPlacesOptions[]) => {
   // Selectors
-  const optionsSelector = `.geo-area-autocomplete-container>.dropdown-container`;
-  const optionSelector = `${optionsSelector} .dropdown-panel-option`;
-
+  const optionSelector = `.dropdown-container .dropdown-panel-option`;
   const input = await page.$("#areaInput");
 
-  await page.type("#areaInput", place);
-  await page.waitForSelector(optionSelector);
+  for (const place of places) {
+    const { name, options } = place;
+    for (const option of options) {
+      const specificOptionSelector = `${optionSelector}:nth-child(${option.positionInList})`;
+      await page.waitForSelector(specificOptionSelector);
+      await delay(2);
 
-  const allOptions = await page
-    .$$eval(optionSelector, (opts) =>
-      opts.map((opt, index) => ({
-        text: opt.textContent || "",
-        positionInList: index + 1,
-      })),
-    )
-    .then((opts) => opts.filter((opt) => opt.text.includes(place) ?? []))
-    .catch((err) => {
-      console.log(`Error while specifying options ${JSON.stringify(err)}`); // eslint-disable-line
-      return [];
-    });
-
-  for (const option of allOptions) {
-    const specificOptionSelector = `${optionSelector}:nth-child(${option.positionInList})`;
-    await page.waitForSelector(specificOptionSelector);
-    await delay(2);
-
-    await page.$eval(specificOptionSelector, (el) => (el as unknown as HTMLButtonElement)?.click()); // prettier-ignore
-    await input?.evaluate((el) => {
-      (el as unknown as HTMLInputElement).value = "";
-    });
-    await page.type("#areaInput", place);
+      await page.$eval(specificOptionSelector, (el) => (el as unknown as HTMLButtonElement)?.click()); // prettier-ignore
+      await input?.evaluate((el) => {
+        (el as unknown as HTMLInputElement).value = "";
+      });
+      await page.type("#areaInput", name);
+    }
   }
 };
 
