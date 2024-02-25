@@ -52,11 +52,6 @@ interface ISiteData {
 }
 
 interface ISelectors {
-  // Selectors that target specific elements that have specific functions - used with querySelector
-  groupSelectors: {
-    propertiesContainer: string; // The selector to select the container of the properties
-    numOfPagesSelector: string; // The number of pages
-  };
   // Selectors that are used with querySelector to scrape specific field info
   individualSelectors: {
     imageUrl: SelectorData;

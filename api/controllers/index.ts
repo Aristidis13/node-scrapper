@@ -2,11 +2,9 @@
 import puppeteer from "puppeteer-extra";
 import StealthPlugin from "puppeteer-extra-plugin-stealth";
 import { siteData } from "../../config/constants";
-import { autoScroll } from "./common";
 import { IResults, ISearchParameters } from "../interfaces-types/properties";
 import { makeString } from "../helpers/common";
-import { specifySelectors } from "../helpers/browser";
-import { getData, setBrowserFields } from "../services/index";
+import { getDataForPage, setBrowserFields } from "../services/index";
 import { getMaxNumOfPages } from "../services/xe/search";
 
 puppeteer.use(StealthPlugin()); // eslint-disable-line new-cap
@@ -22,9 +20,8 @@ async function scrape(searchParams: ISearchParameters) {
   for (const site of siteData) {
     const siteId = makeString(site.id);
     const page = await browser.newPage();
-    const selectors = specifySelectors(siteId);
 
-    if (!selectors || !siteId) {
+    if (!siteId) {
       // TODO throw and logError
       console.error("Selectors or siteId is null"); //eslint-disable-line
       continue;
@@ -32,17 +29,14 @@ async function scrape(searchParams: ISearchParameters) {
 
     await page.goto(site.domain, { waitUntil: "load" });
 
-    await page.exposeFunction("onSubmitSearch", setBrowserFields);
-    await page.exposeFunction("findNumOfPages", getMaxNumOfPages);
-    await page.exposeFunction("onEvaluation", getData);
-
     await setBrowserFields(searchParams, page, siteId);
 
-    await autoScroll(page);
+    results[siteId] = await getDataForPage(page);
 
-    results[siteId] = await page.evaluate(getData, selectors) ?? `Evaluation for ${siteId} failed.`; // prettier-ignore
+    // results[siteId] = await page.evaluate(getData, selectors, page) ?? `Evaluation for ${siteId} failed.`; // prettier-ignore
 
-    // const numOfPages = await page.evaluate(getMaxNumOfPages, selectors);
+    const numOfPages = await getMaxNumOfPages(page);
+    console.log(numOfPages);
   }
   await browser.close();
 
