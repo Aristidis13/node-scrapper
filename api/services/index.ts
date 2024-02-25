@@ -8,6 +8,7 @@ import {
   setTransaction,
 } from "./xe/userActions";
 import { autoScroll } from "../controllers/common";
+import { getMaxNumOfPages, getOptionsForPlace } from "./xe/search";
 
 const getDataForPage = async (page: Page): Promise<IResults> => {
   await autoScroll(page);
@@ -29,7 +30,7 @@ const getDataForPage = async (page: Page): Promise<IResults> => {
   };
 };
 
-async function setBrowserFields(
+async function handleSearch(
   searchParams: ISearchParameters,
   page: Page,
   siteId: string | null,
@@ -38,9 +39,14 @@ async function setBrowserFields(
     await closeCookiesAcceptSection(page);
     await setTransaction(page, searchParams);
     await setProperty(page, searchParams);
-    await setOptionsForPlace(page, searchParams.placesSuggestionsToSearch[0]);
+    const allOptions = await getOptionsForPlace(page, searchParams.placesSuggestionsToSearch); // prettier-ignore
+    await setOptionsForPlace(page, allOptions);
+
+    // From here the scraping starts
     await autoScroll(page);
+    const numOfPages = await getMaxNumOfPages(page);
+    console.log(numOfPages);
   }
 }
 
-export { getDataForPage, setBrowserFields };
+export { getDataForPage, handleSearch };

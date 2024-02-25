@@ -38,6 +38,14 @@ interface IUIParameters {
   item?: Property;
 }
 
+interface IPlacesOptions {
+  name: string;
+  options: {
+    text: string;
+    positionInList: number;
+  }[];
+}
+
 interface SelectorData {
   name: string;
   type: string;
@@ -47,7 +55,6 @@ interface ISiteData {
   id: string;
   title: string;
   domain: string;
-  propertySelector: string;
   parametersMap: Set; // IUIParameters;
 }
 
@@ -72,6 +79,7 @@ interface IResults {
 type Selectors = ISelectors | null;
 
 export {
+  IPlacesOptions,
   IUIParameters,
   IXEAutoCompletePlaceSuggestion,
   SelectorData,
