@@ -1,22 +1,22 @@
 /* eslint-env browser */
-import { ISelectors } from "../../interfaces-types/properties";
+import { Page } from "puppeteer";
 
-const getMaxNumOfPages = (selectorsContainer: ISelectors) => {
-  const initialPageNumber = 0; // Default value
+/**
+ * Extracts from the page pagination the number of the last page
+ * @param {Page} page The page that contains tha pagination
+ * @returns {number} The number of the last page for the results
+ */
+const getMaxNumOfPages = async (page: Page): Promise<number> => {
+  const numOfPagesSelector = ".results-pagination > li";
 
-  const maxPageNumber = Array.from(
-    document.querySelectorAll(
-      selectorsContainer.groupSelectors.numOfPagesSelector,
-    ),
-  ).reduce((currentMax: number, currentElement: Element) => {
-    const currentElementText =
-      currentElement?.textContent ?? initialPageNumber.toString();
-    const currentElementNumber: number = parseInt(currentElementText);
-    return typeof currentElementNumber === "number" &&
-      currentMax < currentElementNumber
-      ? currentElementNumber
-      : currentMax;
-  }, initialPageNumber);
+  const maxPageNumber = await page.$$eval(numOfPagesSelector, (nums) =>
+    nums.reduce((currentMax: number, curEl: Element) => {
+      const curElNum: number = parseInt(curEl?.textContent ?? `${0}`);
+      return typeof curElNum === "number" && currentMax < curElNum
+        ? curElNum
+        : currentMax;
+    }, 0),
+  );
 
   return maxPageNumber;
 };

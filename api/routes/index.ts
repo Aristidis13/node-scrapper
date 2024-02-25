@@ -14,8 +14,8 @@ const router = express.Router(); //eslint-disable-line
 router.get("/", async (req: Request, res: Response, next: NextFunction) => {
   const params = {
     transaction: "buy",
-    propertyType: "house",
-    placesSuggestionsToSearch: ["Αθηνων", "Πάτρα"],
+    propertyType: "re_land",
+    placesSuggestionsToSearch: ["Πάτρα"],
   }; // normalizeParams(req.query);
 
   const XEData = await getProperties(params);

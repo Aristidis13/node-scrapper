@@ -1,3 +1,0 @@
-const xeSearchSelectors = {};
-
-export { xeSearchSelectors };
