@@ -8,9 +8,7 @@ import { IPlacesOptions } from "../../interfaces-types/properties";
  * @returns {number} The number of the last page for the results
  */
 const getMaxNumOfPages = async (page: Page): Promise<number> => {
-  const numOfPagesSelector = ".results-pagination > li";
-
-  const maxPageNumber = await page.$$eval(numOfPagesSelector, (nums) =>
+  const maxPageNumber = await page.$$eval(".results-pagination > li", (nums) =>
     nums.reduce((currentMax: number, curEl: Element) => {
       const curElNum: number = parseInt(curEl?.textContent ?? `${0}`);
       return currentMax < curElNum ? curElNum : currentMax;
