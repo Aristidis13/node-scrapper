@@ -1,6 +1,6 @@
-import express, { Request, Response, NextFunction } from "express";
-import getProperties from "../controllers";
-import { normalizeParams } from "../controllers/common";
+import express, { Request, Response, NextFunction } from 'express';
+import getProperties from '../controllers';
+import { normalizeParams } from '../controllers/common';
 
 /* Turbo Console Log
  * CTRL + ALT + L on variable `x` -> creates console for x
@@ -11,11 +11,11 @@ import { normalizeParams } from "../controllers/common";
 
 const router = express.Router(); //eslint-disable-line
 // ---- GET
-router.get("/", async (req: Request, res: Response, next: NextFunction) => {
+router.get('/', async (req: Request, res: Response, next: NextFunction) => {
   const params = {
-    transaction: "buy",
-    propertyType: "re_land",
-    placesSuggestionsToSearch: ["Πάτρα"],
+    transaction: 'buy',
+    propertyType: 're_land',
+    placesSuggestionsToSearch: ['Πάτρα'],
   }; // normalizeParams(req.query);
 
   const XEData = await getProperties(params);

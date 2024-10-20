@@ -7,15 +7,19 @@ import { IPlacesOptions } from "../../interfaces-types/properties";
  * @param {Page} page The page that contains tha pagination
  * @returns {number} The number of the last page for the results
  */
-const getMaxNumOfPages = async (page: Page): Promise<number> => {
-  const maxPageNumber = await page.$$eval(".results-pagination > li", (nums) =>
-    nums.reduce((currentMax: number, curEl: Element) => {
-      const curElNum: number = parseInt(curEl?.textContent ?? `${0}`);
-      return currentMax < curElNum ? curElNum : currentMax;
-    }, 0),
-  );
+const getMaxNumOfPages = async (page: Page): Promise<void> => {
+  // const maxPageNumber = await page.$$eval(".results-pagination > li", (nums) =>
+  //   nums.reduce((currentMax: number, curEl: Element) => {
+  //     const curElNum: number = parseInt(curEl?.textContent ?? `${0}`);
+  //     return currentMax < curElNum ? curElNum : currentMax;
+  //   }, 0),
+  // );
 
-  return maxPageNumber;
+  const nextBtnPage = await page.$(".results-pagination > li.active+li");
+  await nextBtnPage?.click();
+  await page.waitForNavigation();
+
+  // return maxPageNumber;
 };
 
 /**
